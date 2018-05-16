@@ -45,7 +45,7 @@
         <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+        <![endif]-->
 
 
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>  
@@ -82,21 +82,18 @@
 
             <?php
             session_start();
-            $word = $_SESSION['home']['user'];
-            include 'php_src/lib/util.php';
-            $role = getRoleArray();
-            $word = array();
-            if (array_key_exists("id", $_GET)) {
-                $uid = $_GET["id"];
-                $word = getWord($uid);
-                $readonly = "readonly";
-                $disabled = "disabled";
-                if ($word == NULL) {
-                    header('Location: ' . "./index.php");
-                }
-            } else {
-                $readonly = "";
+            $user = $_SESSION['home']['user'];
+            if ($user == NULL) {
+                $newURL = "./login.html?error=2";
+                unset($_SESSION["home"]);
+                session_destroy();
+                header('Location: ' . $newURL);
             }
+            include 'php_src/lib/util.php';
+            $data = getStats();
+            $emailCount = $data["mailSent"];
+            $words = $data["noOfWords"];
+            $users = $data["members"];
             ?>
 
             <!-- Left side column. contains the logo and sidebar -->
@@ -113,7 +110,7 @@
                         </div>
 
                         <div class="info">
-                            <p><?php echo $word["userInfo"]["name"] ?></p>
+                            <p><?php echo $user["userInfo"]["name"] ?></p>
                             <a href="./php_src/logout.php" class="link" data-toggle="tooltip" title="" data-original-title="Logout"><i class="ion ion-power"></i></a>
                         </div>
                     </div>
@@ -147,7 +144,6 @@
                                 </span>
                             </a>
                         </li>
-
                         <li >
                             <a href="./exwords.php">
                                 <i class="fa fa-file-word-o"></i> <span>ExWords</span>
@@ -184,119 +180,140 @@
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
                     <h1>
-                        Word Edit
-                        <small>Word  panel</small>
+                        Dashboard
+                        <small>Control panel</small>
                     </h1>
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-                        <li class="breadcrumb-item active">Word</li>
+                        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Change Password</a></li>
+                        <li class="breadcrumb-item active">Password</li>
                     </ol>
                 </section>
 
                 <!-- Main content -->
-
-
-                <!-- Main content -->
                 <section class="content">
 
-                    <!-- User data Forms -->
-                    <div class="box">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Word Data</h3>
+                    <div class="row">
 
-                            <div class="box-tools pull-right">
-                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
-                            </div>
-                        </div>
-                        <!-- /.box-header -->
-                        <div class="box-body">
-                            <div class="row">
-                                <div class="col">
-                                    <form novalidate="" method="POST" action="./php_src/word.php" />
-                                    <div class="form-group">
-                                        <h5>Id <span class="text-danger">*</span></h5>
-                                        <div class="controls">
-                                            <input type="text" name="id" class="form-control" <?php echo $readonly; ?> required="" data-validation-required-message="This field is required" value=<?php echo $word["id"] ?> /> </div>
-                                    </div>
+                        <div class="col-xl-6 col-lg-12">
+                            <!-- Horizontal Form -->
+                            <div class="box">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Password Form</h3>
+                                </div>
+                                <!-- /.box-header -->
+                                <!-- form start -->
+                                <form class="form-horizontal form-element" method="POST" action="php_src/changePassword.php"/>
+                                <div class="box-body">
+                                    <div class="form-group row">
+                                        <label for="inputEmail3" class="col-sm-2 control-label">Id</label>
 
-                                    <div class="form-group">
-                                        <h5>Role <span class="text-danger">*</span></h5>
-                                        <div class="controls">
-                                            <select name="role" class="form-control" <?php echo $disabled; ?> >
-                                                <?php
-                                                foreach ($role as $key => $value) {
-                                                    $selected = "";
-                                                    if ($disabled != NULL && $word["role"] == $key) {
-                                                        $selected = "selected=\"selected\"";
-                                                        ?> 
-                                                        <option value=<?php echo $key ?> $selected> <?php echo $value ?></option>
-                                                        <?php
-                                                    } else if ($disabled == NULL){
-                                                        ?>
-                                                        <option value=<?php echo $key ?> $selected> <?php echo $value ?></option> 
-                                                        <?php
-                                                    }
-                                                }
-                                                ?>
-                                            </select>
+                                        <div class="col-sm-10">
+                                            <input type="text"  name="id" class="form-control" id="inputEmail3" placeholder="ID" />
                                         </div>
                                     </div>
+                                    <div class="form-group row">
+                                        <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
 
-                                    <div class="form-group">
-                                        <h5>Word <span class="text-danger">*</span></h5>
-                                        <div class="controls">
-                                            <input type="text" name="word" class="form-control"  required="" data-validation-required-message="This field is required" value="<?php echo $word["word"] ?>" /> </div>
+                                        <div class="col-sm-10">
+                                            <input type="text" name="pass" class="form-control" id="inputPassword3" placeholder="Password" />
+                                        </div>
                                     </div>
-
-                                    <div class="form-group">
-                                        <h5>Meaning <span class="text-danger">*</span></h5>
-                                        <div class="controls">
-                                            <textarea name="meaning" class="form-control" required="" data-validation-required-message="This field is required"  ><?php echo $word["meaning"] ?></textarea> </div>
-                                    </div>
-
-
-
-                                    <div class="form-group">
-                                        <h5>Example Basic <span class="text-danger">*</span></h5>
-                                        <div class="controls">
-                                            <textarea name="example_basic" class="form-control" required="" data-validation-required-message="This field is required"  ><?php echo $word["example_basic"] ?></textarea> </div>
-                                    </div>    
-
-                                    <div class="form-group">
-                                        <h5>Example Revision <span class="text-danger">*</span></h5>
-                                        <div class="controls">
-                                            <textarea name="example_revision" class="form-control" required="" data-validation-required-message="This field is required" ><?php echo $word["example_revision"] ?></textarea></div>
-                                    </div>    
-
-                                    <div class="form-group">
-                                        <h5>Created On <span class="text-danger">*</span></h5>
-                                        <div class="controls">
-                                            <input type="text" name="createdOn" class="form-control" required="" data-validation-required-message="This field is required" value="<?php echo $word["createdOn"] ?>" /> </div>
-                                    </div>    
-
-
-
-
-                                    <div class="text-xs-right">
-                                        <button type="submit" class="btn btn-info">Submit</button>
-                                    </div>
-                                    </form>
-
                                 </div>
-                                <!-- /.col -->
+                                <!-- /.box-body -->
+                                <div class="box-footer">
+                                    <button type="submit" class="btn btn-info pull-right">Update</button>
+                                </div>
+                                <!-- /.box-footer -->
+                                </form>
                             </div>
-                            <!-- /.row -->
+
                         </div>
-                        <!-- /.box-body -->
                     </div>
-                    <!-- /.box -->
 
 
 
-                    <!-- User Subscription Forms -->
 
 
 
-                    </body>
-                    </html>
+
+            </div>
+
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+    <footer class="main-footer">
+        <div class="pull-right d-none d-sm-inline-block">
+            <ul class="nav nav-primary nav-dotted nav-dot-separated justify-content-center justify-content-md-end">
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:void(0)">FAQ</a>
+                </li>
+                <li class="nav-item">
+                </li>
+            </ul>
+        </div>
+        &copy; 2018 <a href="#">EdWinner</a>. All Rights Reserved.
+    </footer>
+
+    <!-- /.control-sidebar -->
+
+    <!-- Add the sidebar's background. This div must be placed immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+
+</div>
+<!-- ./wrapper -->
+
+
+
+<!-- jQuery 3 -->
+<script src="../assets/vendor_components/jquery/dist/jquery.js"></script>
+
+<!-- popper -->
+<script src="../assets/vendor_components/popper/dist/popper.min.js"></script>
+
+<!-- Bootstrap 4.0-->
+<script src="../assets/vendor_components/bootstrap/dist/js/bootstrap.js"></script>
+
+<!-- Morris.js charts -->
+<script src="../assets/vendor_components/raphael/raphael.min.js"></script>
+<script src="../assets/vendor_components/morris.js/morris.min.js"></script>	
+
+
+
+<!-- weather for demo purposes -->
+<script src="../assets/vendor_plugins/weather-icons/WeatherIcon.js"></script>
+
+<!-- Sparkline -->
+<script src="../assets/vendor_components/jquery-sparkline/dist/jquery.sparkline.js"></script>
+
+<!-- daterangepicker -->
+<script src="../assets/vendor_components/moment/min/moment.min.js"></script>
+<script src="../assets/vendor_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+
+<!-- datepicker -->
+<script src="../assets/vendor_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+
+<!-- Bootstrap WYSIHTML5 -->
+<script src="../assets/vendor_plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.js"></script>
+
+<!-- Slimscroll -->
+<script src="../assets/vendor_components/jquery-slimscroll/jquery.slimscroll.js"></script>
+
+<!-- FastClick -->
+<script src="../assets/vendor_components/fastclick/lib/fastclick.js"></script>
+
+<!-- peity -->
+<script src="../assets/vendor_components/jquery.peity/jquery.peity.js"></script>
+
+<!-- Lion_admin App -->
+<script src="./js/template.js"></script>
+
+<!-- Lion_admin dashboard demo (This is only for demo purposes) -->
+<script src="./js/pages/dashboard.js"></script>
+
+<!-- Lion_admin for demo purposes -->
+<script src="./js/demo.js"></script>
+
+
+</body>
+</html>

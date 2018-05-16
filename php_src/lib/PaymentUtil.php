@@ -1,4 +1,5 @@
 <?php
+include 'Constants.php';
 // Merchant key here as provided by Payu
 $MERCHANT_KEY = "wh6zdt3O";
 // Merchant Salt as provided by Payu
@@ -8,8 +9,8 @@ $PAYU_BASE_URL = "https://test.payu.in";
 $PAYU_BASE_URL = "https://sandboxsecure.payu.in";		// For Sandbox Mode
 //$PAYU_BASE_URL = "https://secure.payu.in";			// For Production Mode
 
-$failureURL = "http://edwinner.com/php_src/lib/failure.php";
-$successURL = "http://edwinner.com/php_src/lib/success.php";
+$failureURL = WEBSITE."php_src/lib/failure.php";
+$successURL = WEBSITE."php_src/lib/success.php";
 
 
 $action = '';

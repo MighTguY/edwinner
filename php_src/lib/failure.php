@@ -1,4 +1,6 @@
 <?php
+include 'Constants.php';
+
 $status=$_POST["status"];
 $firstname=$_POST["firstname"];
 $amount=$_POST["amount"];
@@ -32,7 +34,7 @@ else {
 
 } 
 
-$url = "http://edwinner.com:8080/api/v1/payment_unsub/".$firstname;
+$url = API."/payment_unsub/".$firstname;
 $curl = curl_init();
 // Set some options - we are passing in a useragent too here
 curl_setopt_array($curl, array(
@@ -40,7 +42,7 @@ curl_setopt_array($curl, array(
 			CURLOPT_URL => $url,
 			CURLOPT_USERAGENT => 'Codular Sample cURL Request'
 			));
-$newURL = "../../index.php?code=2";
+$newURL = "../../index.php?code=4";
 // Send the request & save response to $resp
 $resp = curl_exec($curl);
 // Close request to clear up some resources

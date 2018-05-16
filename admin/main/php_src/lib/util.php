@@ -1,5 +1,6 @@
 <?php
 include 'DbUtil.php';
+include 'Constants.php';
 
 function register($name, $email, $tel, $type,$sub) {
     $conn = getDBConnection();
@@ -83,7 +84,6 @@ return $return;
 function validateUsr($user, $password,$role) {
     $conn = getDBConnection();
     $sql = "select id From user_info where email='".$user."' and password = '".$password."' and role=".$role." and isValid=1"; 
-   //echo $sql; die;
     $id = -1;
     if ($resultObj = $conn->query($sql)) {
         $result = $resultObj->fetch_array(MYSQLI_ASSOC);
@@ -91,19 +91,18 @@ function validateUsr($user, $password,$role) {
         
     }
     return $id;
-
 }
 
 function getUSER($userId) {
     //$server = parse_ini_file("../../config/server.ini");
-    $server["api"] = "http://edwinner.com:8080/api/v1";
+    $server["api"] = API;
     $user = json_decode(file_get_contents($server["api"]."/get/user/".$userId),true);
     return $user;
 }
 
 function getUSERS() {
     //$server = parse_ini_file("../../config/server.ini");
-    $server["api"] = "http://edwinner.com:8080/api/v1";
+    $server["api"] = API;
     $user = json_decode(file_get_contents($server["api"]."/get/users"),true);
 
     return $user;
@@ -111,7 +110,7 @@ function getUSERS() {
 
 function getStats() {
     //$server = parse_ini_file("../../config/server.ini");
-    $server["api"] = "http://edwinner.com:8080/api/v1";
+    $server["api"] = API;
     $stats = json_decode(file_get_contents($server["api"]."/stats"),true);
 
     return $stats;
@@ -119,7 +118,7 @@ function getStats() {
 
 
 function update($handle,$data) {
-    $server["api"] = "http://edwinner.com:8080/api/v1";
+    $server["api"] = API;
     $url = $server["api"]."/".$handle;
     $jsonData = json_encode($data);
     $ch = curl_init();
@@ -133,29 +132,39 @@ function update($handle,$data) {
 }
 
 function getWords() {
-    $server["api"] = "http://edwinner.com:8080/api/v1";
+    $server["api"] = API;
     $words = json_decode(file_get_contents($server["api"]."/get/words"),true);
 
     return $words;
 }
 
 function getExtraWords() {
-        $server["api"] = "http://edwinner.com:8080/api/v1";
+        $server["api"] = API;
     $words = json_decode(file_get_contents($server["api"]."/get/extrawords"),true);
 
     return $words;
 }
 
 function getWord($wordId) {
- $server["api"] = "http://edwinner.com:8080/api/v1";
+ $server["api"] = API;
  $word = json_decode(file_get_contents($server["api"]."/get/word/".$wordId),true);
  return $word;
 }
 
 function getExWord($wordId) {
- $server["api"] = "http://edwinner.com:8080/api/v1";
+ $server["api"] = API;
  $word = json_decode(file_get_contents($server["api"]."/get/extraword/".$wordId),true);
  return $word;
+}
+
+function changePassword($userId,$pass) {
+     $server["api"] = API;
+     $word = json_decode(file_get_contents($server["api"]."/set/userPassword?id=".$userId."&pass=".$pass),true);
+      return $word; 
+}
+
+function getRoleArray( ) {
+   return array("1"=>"Beginner","2"=>"Intermidiate","3"=>"Graduate");
 }
 /* 
  * To change this license header, choose License Headers in Project Properties.

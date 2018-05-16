@@ -155,7 +155,14 @@
           </span>
         </a>
       </li>
-
+<li >
+          <a href="./changepassword.php">
+            <i class="fa fa-file-word-o"></i> <span>ChangePassword</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-right pull-right"></i>
+            </span>
+          </a>
+        </li>
         <!--li >
           <a href="./index.php">
             <i class="fa fa-dashboard"></i> <span>Page</span>

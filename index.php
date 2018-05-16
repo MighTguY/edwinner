@@ -29,6 +29,7 @@
 include 'php_src/lib/util.php';
 $code = $_GET["code"];
 $price =  getCostArray();
+
 if($code == "3") {
     $type = "alert-success";
 } else {
@@ -171,7 +172,7 @@ echo "</div>";
                 foreach ($price["monthly"] as $key => $value) {
                 ?> 
                   <div class="form-group">
-                      <label><input type="radio" name="mo-opt" value=<?php echo $key."|".$value["double"] ?>> <?php echo "".$key." (".$value["str"].")"?></label>
+                      <label><input type="radio" name="mo-opt" value=<?php echo $key."|".$value["double"]."|".$value["id"] ?>> <?php echo "".$key." (".$value["str"].")"?></label>
                   </div>
                 <?php 
                 }
@@ -219,10 +220,9 @@ echo "</div>";
 
                 <?php 
                 foreach ($price["yearly"] as $key => $value) {
-
                 ?> 
                   <div class="form-group">
-                      <label><input type="radio" name="yr-opt" value=<?php echo $key."|".$value["double"] ?>> <?php echo "".$key." (".$value["str"].")"?></label>
+                      <label><input type="radio" name="yr-opt" value=<?php echo $key."|".$value["double"]."|".$value["id"] ?>> <?php echo "".$key." (".$value["str"].")"?></label>
                   </div>
                 <?php 
                 }

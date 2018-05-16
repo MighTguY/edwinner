@@ -1,4 +1,6 @@
 <?php
+include 'Constants.php';
+
 $status=$_POST["status"];
 $firstname=$_POST["firstname"];
 $amount=$_POST["amount"];
@@ -23,7 +25,7 @@ $hash = hash("sha512", $retHashSeq);
 
 if ($hash != $posted_hash) {
 	echo "Invalid Transaction. Please contact admin at goku0910@gmail.com";
-	$newURL = "../index.php?code=2";
+	$newURL = "../index.php?code=4";
 }
 else {
 
@@ -33,7 +35,7 @@ else {
 	$newURL = "../../index.php?code=3";
 
 }         
-$url = "http://edwinner.com:8080/api/v1/payment_sub/".$firstname;
+$url = API."/payment_sub/".$firstname;
 $curl = curl_init();
 // Set some options - we are passing in a useragent too here
 curl_setopt_array($curl, array(
@@ -45,5 +47,6 @@ curl_setopt_array($curl, array(
 $resp = curl_exec($curl);
 // Close request to clear up some resources
 curl_close($curl);
+
 header('Refresh: 1; url=' . $newURL);
 ?>
