@@ -4,7 +4,7 @@ $id = $_POST["id"];
 $password = $_POST["pass"];
 
 print_r(changePassword($id,$password));
-$newURL = "../changePassword.php";
+$newURL = "../changepassword.php";
   header('Location: ' . $newURL);
 /* 
  * To change this license header, choose License Headers in Project Properties.
