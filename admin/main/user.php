@@ -247,6 +247,11 @@
           </div>
 
           <div class="form-group">
+            <h5>Monthly CheckPoint <span class="text-danger">*</span></h5>
+            <div class="controls">
+              <input type="text" name="monthlyCheckpoint" class="form-control" required="" data-validation-required-message="This field is required" value=<?php echo $user["userData"]["monthlyCheckpoint"]?> /> </div>
+          </div>
+          <div class="form-group">
             <h5>SubscriptionType <span class="text-danger">*</span></h5>
             <div class="controls">    <select name="subscriptionType" id="select" required="" class="form-control">
                 <option value="monthly" <?php echo $user["userData"]["subscriptionType"]=="monthly"? "selected=true" : "" ?> /> Monthly

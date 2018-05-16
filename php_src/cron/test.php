@@ -8,13 +8,14 @@ function getUsers($role) {
     return $users;
 }
 
-function getCheckPoints($checkPoint,$role) {
+function getCheckPoints($checkPoint,$role,$mcheck) {
     $checkPoint=$checkPoint++;
     $url = API."/get/word/checkpoint/".$checkPoint."?role=".$role;
     $words["word"] = hitURL($url);
     $r_url = API."/get/revisionWords/".$checkPoint."?role=".$role;
     $words["revision"] = hitURL($r_url);
-  
+    $l_url = API."/get/revisionMonthWords/".$checkPoint."?role=".$role."&from=".$mcheck;
+    $words["m_revision"] = hitURL($l_url);
     return $words;
 }
 
@@ -53,7 +54,7 @@ function getAsList($str) {
 
 function generateMailerHtml($extraData, $word, $user) {
     $htmlText = file_get_contents('data.html');
-    $lwords = file_get_contents('lword.html');
+    $lwords = file_get_contents('lwords.html');
     $lword = file_get_contents('lword.html');
     $rwords = file_get_contents('rwords.html');
     $rword = file_get_contents('rword.html');
@@ -87,23 +88,29 @@ function generateMailerHtml($extraData, $word, $user) {
         $rwords = str_replace("[R_WORD_HTML]",$rwordFile, $rwords);
         $arrayData["[R_WORDS]"] =   $rwords;
     }
-    //	foreach ($word["revision"] as $key => $value) {
-    //		$revisionWords .= "<li> ".$value["word"]."</li>";
-    //		if($key==0) {
-    //			$lastRevisionWord = $value["word"];
-    //			$lastRevisionMeaning = $value["meaning"];
-    //			$lastRevisionRevision= $value["example_revision"];
-    //		}
-    //	}
-    //
+    if(count($word["m_revision"])>0) {
+        $lwordFile="";
+    	foreach ($word["m_revision"] as $key => $value) {
+            $tempData["[L_WORD]"]  =   $value["word"];
+            $lwordFile .= $lword;
+            foreach ($tempData as $key => $value) {
+                $lwordFile = str_replace($key,$value,$lwordFile);
+            }
+        }
+        #print $lwords;die;
+        $lwords = str_replace("[L_WORD_HTML]",$lwordFile, $lwords);
+        $arrayData["[L_WORDS]"] =   $lwords;
+    	}
+    
+    
     foreach ($arrayData as $key => $value) {
         $htmlText = str_replace($key,$value,$htmlText);
     }
     return $htmlText;
 }
 
-function postProcess($id, $userId) {
-    $url = API."/updateCheckpoint/".$userId."?cpoint=".$id;
+function postProcess($id, $userId,$mpoint) {
+    $url = API."/updateCheckpoint/".$userId."?cpoint=".$id."&mpoint=".$mpoint;
     hitURL($url);
 }
 
@@ -112,16 +119,32 @@ function sendData ($users,$role) {
     foreach ($users as $user) {
         $checkpoint = $user["userData"]["checkPoint"];
         $email = $user["userInfo"]["email"];
-        $word = getCheckPoints($checkpoint,$role);
+        $word = getCheckPoints($checkpoint,$role,$user["userData"]["monthlyCheckpoint"]);
         if($word["word"] != NULL ) {
             $extraData = getExtraData($user["userData"]["role"]);
             $htmlText = generateMailerHtml($extraData, $word, $user);
-            echo $email;
-            sendMail($email, "EDWINNER: Word of the Day ", $htmlText);
-            postProcess($word["word"]["id"],$user["userData"]["userId"]);
+            $id=0;
+            if(count($word["m_revision"])>0) {
+                $id = getLastId($word["m_revision"]);
+            }
+           sendMail($email, "EDWINNER: Word of the Day ", $htmlText);
+           postProcess($word["word"]["id"],$user["userData"]["userId"],$id);
         }
     }
 }
+
+
+function getLastId($arr) {
+$id=0;
+
+foreach($arr as $key=>$val) {
+if($val["id"]>$id) {
+    $id=$val["id"];
+}
+}
+return $id;
+}
+
 function main() {
 
     $users_b = getUsers(1);
