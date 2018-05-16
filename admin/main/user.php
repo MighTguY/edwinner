@@ -86,6 +86,7 @@
   include 'php_src/lib/util.php';
   $uid = $_GET["id"]; 
   $user = getUSER($uid);
+   $role = getRoleArray();
  if($user==NULL) {
   header('Location: ' . "./index.php");
  }
@@ -222,7 +223,21 @@
           <div class="form-group">
             <h5>Role <span class="text-danger">*</span></h5>
             <div class="controls">
-              <input type="text" name="role" class="form-control"  required="" data-validation-required-message="This field is required" value=<?php echo $user["userData"]["role"]?> /> </div>
+                <select name="role" class="form-control" <?php echo $disabled; ?> >
+                                                <?php
+                                               
+                                                foreach ($role as $key => $value) {
+                                                    $selected = "";
+                                                    if ( $user["userData"]["role"] == $key) {
+                                                        $selected = "selected=\"selected\"";
+                                                        ?> 
+                                                        <option value=<?php echo $key ?> $selected> <?php echo $value ?></option>
+                                                        <?php
+                                                    } 
+                                                }
+                                                ?>
+                                            </select>
+                        </div>
           </div>
 
           <div class="form-group">
@@ -310,8 +325,22 @@
           <div class="form-group">
             <h5>Role <span class="text-danger">*</span></h5>
             <div class="controls">
-              <input type="text" name="role" class="form-control" required=""   data-validation-required-message="This field is required" value=<?php echo $user["userInfo"]["role"]?> /> </div>
-          </div>
+                         <select name="role" class="form-control" <?php echo $disabled; ?> >
+                                                <?php
+                                               
+                                                foreach ($role as $key => $value) {
+                                                    $selected = "";
+                                                    if ( $user["userInfo"]["role"] == $key) {
+                                                        $selected = "selected=\"selected\"";
+                                                        ?> 
+                                                        <option value=<?php echo $key ?> $selected> <?php echo $value ?></option>
+                                                        <?php
+                                                    } 
+                                                }
+                                                ?>
+                                            </select>
+            </div>
+                       </div>
 
           <div class="form-group">
             <h5>Name <span class="text-danger">*</span></h5>
